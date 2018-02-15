@@ -181,7 +181,7 @@ switch(event.key){
 	changeAnimation("catKickRight")
 	setTimeout(function(){ 
 	changeAnimation("catIdleRight")
-	}, 700)
+	}, 600)
 	}
 	break
 	case "k":
