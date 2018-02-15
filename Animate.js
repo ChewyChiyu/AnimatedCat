@@ -89,10 +89,13 @@ class Cat{
 	}
 
 	setUpAnimations(){
-		const SLEEP_TIMES = {idle: 200, walk: 100, jump: 120, lieDown: 100}
+		const SLEEP_TIMES = {idle: 100, walk: 100, jump: 100, punch: 50, kick: 80, chop: 50}
 		addAnimation("catIdleRight", this.spriteSheetRight, [  {x:20,y:24,w:19,h:30}, {x:84,y:25,w:19,h:29}, {x:148,y:24,w:19,h:30}, {x:212,y:23,w:19,h:31}], SLEEP_TIMES.idle )
 		addAnimation("catWalkRight", this.spriteSheetRight, [  {x:20,y:88,w:19,h:30}, {x:84,y:88,w:19,h:30}, {x:149,y:87,w:18,h:31}, {x:213,y:87,w:18,h:31}, {x:276,y:88,w:19,h:30}, {x:341,y:88,w:18,h:30}], SLEEP_TIMES.walk)
 		addAnimation("catJumpRight", this.spriteSheetRight, [   {x:20,y:152,w:19,h:30}, {x:84,y:152,w:17,h:28}, {x:148,y:150,w:18,h:31}, {x:214,y:150,w:16,h:31}, {x:276,y:152,w:17,h:28}, {x:340,y:154,w:18,h:28}, {x:404,y:155,w:16,h:27}, {x:468,y:154,w:18,h:28}], SLEEP_TIMES.jump)
+		addAnimation("catPunchRight", this.spriteSheetRight, [ {x:20,y:600,w:19,h:30}, {x:84,y:600,w:16,h:30}, {x:148,y:600,w:16,h:30}, {x:212,y:600,w:16,h:30}, {x:274,y:601,w:26,h:29}, {x:339,y:601,w:25,h:29}, {x:404,y:600,w:16,h:30}, {x:468,y:600,w:22,h:30}, {x:533,y:600,w:21,h:30}, {x:596,y:600,w:19,h:30}], SLEEP_TIMES.punch)
+		addAnimation("catKickRight", this.spriteSheetRight, [ {x:20,y:920,w:19,h:30}, {x:84,y:922,w:18,h:28}, {x:148,y:923,w:16,h:27}, {x:212,y:922,w:17,h:28}, {x:276,y:920,w:18,h:30}, {x:340,y:921,w:24,h:29}], SLEEP_TIMES.kick)
+		addAnimation("catChopRight", this.spriteSheetRight, [ {x:20,y:984,w:19,h:30}, {x:84,y:986,w:18,h:28}, {x:149,y:987,w:17,h:27}, {x:214,y:988,w:18,h:26}, {x:277,y:985,w:24,h:29}, {x:342,y:985,w:20,h:29}], SLEEP_TIMES.chop)
 		changeAnimation("catIdleRight")
 	}
 
@@ -108,13 +111,19 @@ class Cat{
 
 
 		if(this.y + animateMap.get(currentAnimationKey).texturePosArray[currentAnimationIndex].h < canvas.height){ //gravity
+			 if(currentAnimationKey=="catJumpRight" || currentAnimationKey=="catIdleRight")
 			this.dy += 0.01
 		}else{
 			this.dy = 0
+
 			if(currentAnimationKey=="catJumpRight"){
 				changeAnimation("catIdleRight")
+			}
+
+			if(currentAnimationKey=="catIdleRight"){
 				this.dx = 0
 			}
+
 		}
 		
 	}
@@ -141,14 +150,14 @@ window.addEventListener("keydown", function (event) {
 switch(event.key){
 	case "a":
 	if(currentAnimationKey!="catJumpRight"){
-	cat.dx = -.09
+	cat.dx = -.07
 	cat.facingRight = false
 	changeAnimation("catWalkRight")
 	}
 	break;
 	case "d":
 	if(currentAnimationKey!="catJumpRight"){
-	cat.dx = .09
+	cat.dx = .07
 	cat.facingRight = true
 	changeAnimation("catWalkRight")
 	}
@@ -157,6 +166,30 @@ switch(event.key){
 	if(cat.dy == 0){ // meaning no jump
 	cat.dy = -.1
 	changeAnimation("catJumpRight")
+	}
+	break
+	case "h":
+	if(currentAnimationKey=="catIdleRight" || currentAnimationKey == "catWalkRight"){
+	changeAnimation("catPunchRight")
+	setTimeout(function(){ 
+	changeAnimation("catIdleRight")
+	}, 500)
+	}
+	break
+	case "j":
+	if(currentAnimationKey=="catIdleRight" || currentAnimationKey == "catWalkRight"){
+	changeAnimation("catKickRight")
+	setTimeout(function(){ 
+	changeAnimation("catIdleRight")
+	}, 700)
+	}
+	break
+	case "k":
+	if(currentAnimationKey=="catIdleRight" || currentAnimationKey == "catWalkRight"){
+	changeAnimation("catChopRight")
+	setTimeout(function(){ 
+	changeAnimation("catIdleRight")
+	}, 450)
 	}
 	break
 	break
@@ -196,7 +229,7 @@ event.preventDefault();
 function startTest(){
 	cat = new Cat(canvas.width/2,canvas.height/2)
 	MainLoop.setUpdate(update).setDraw(draw).start()
-	MainLoop.setMaxAllowedFPS(50)
+	MainLoop.setMaxAllowedFPS(60)
 }
 
 function update(delta){
